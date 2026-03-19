@@ -4,7 +4,6 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from pensieve_mind.api.routes import embed, search
-from pensieve_mind.search.mind_service import MindService
 
 logging.basicConfig(
     level=logging.INFO,
@@ -12,14 +11,10 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-mind_service: MindService | None = None
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    global mind_service
     logger.info("pensieve-mind starting up...")
-    mind_service = MindService()
-    logger.info("MindService bereit")
     yield
     logger.info("pensieve-mind shutting down...")
 

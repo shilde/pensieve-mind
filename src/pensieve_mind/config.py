@@ -1,6 +1,8 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env")
+
     # Qdrant
     qdrant_host: str = "localhost"
     qdrant_port: int = 6333
@@ -13,8 +15,5 @@ class Settings(BaseSettings):
     # Scraping
     scraper_timeout_seconds: int = 30
     scraper_max_content_length: int = 50_000
-
-    class Config:
-        env_file = ".env"
 
 settings = Settings()

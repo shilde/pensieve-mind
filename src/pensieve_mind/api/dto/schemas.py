@@ -14,9 +14,9 @@ class EmbedRequest(BaseModel):
 
 class EmbedResponse(BaseModel):
     bookmark_id: UUID
-    emedding_id: str
+    embedding_id: str
     title: str | None
-    desription: str | None
+    description: str | None
     content_snippet: str | None
 
 class SearchResult(BaseModel):

@@ -46,9 +46,9 @@ class MindService:
 
         return EmbedResponse(
             bookmark_id=bookmark_id,
-            emedding_id=embedding_id,
+            embedding_id=embedding_id,
             title=scrape_result.title,
-            desription=scrape_result.description,
+            description=scrape_result.description,
             content_snippet=scrape_result.content[:300] if scrape_result.content else None,
         )
     

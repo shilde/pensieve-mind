@@ -1,32 +1,27 @@
 import logging
 from uuid import UUID
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
 from pensieve_mind.api.dto.schemas import EmbedRequest, EmbedResponse
+from pensieve_mind.dependencies import get_mind_service
+from pensieve_mind.search.mind_service import MindService
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/embed", tags=["embed"])
 
-def get_mind_service():
-    import pensieve_mind.main as main_module
-    if main_module.mind_service is None:
-        raise HTTPException(status_code=503, detail="Service not ready")
-    return main_module.mind_service
 
 @router.post("", response_model=EmbedResponse, status_code=201)
-async def embed(request: EmbedRequest) -> EmbedResponse:
-    service = get_mind_service()
+async def embed(request: EmbedRequest, service: MindService = Depends(get_mind_service)) -> EmbedResponse:
     try:
         return await service.embed(request.bookmark_id, request.url)
     except Exception as e:
-        logger.info(f"Embedding request for bookmark {request.bookmark_id}")
-        raise HTTPException(status_code=501, detail="Not yet implemented")
+        logger.exception(f"Embedding request for bookmark {request.bookmark_id}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.delete("/{bookmark_id}", status_code=204)
-def delete_embedding(bookmark_id: UUID) -> None:
-    service = get_mind_service()
+def delete_embedding(bookmark_id: UUID, service: MindService = Depends(get_mind_service)) -> None:
     try:
         service.delete(bookmark_id)
     except Exception as e:
